@@ -148,14 +148,18 @@ def main():
     shore(-1)
     shore(1)
 
-    # Sun path on the water: bright broken streaks under the sun
+    # Sun path on the water: bright broken streaks under the sun.
+    # The streaks fade out where the place name sits, so the lettering
+    # stays clean against the sea.
+    name_top = int(H * 0.80)
     seed = 987654
     for y in range(horizon + 4, H - 130, 3):
         t = (y - horizon) / (H - horizon)
         width = int(40 + 150 * t)
+        fade = 1.0 if y < name_top else max(0.0, 1.0 - (y - name_top) / 60.0)
         for x in range(sun_x - width, sun_x + width):
             seed = (seed * 1103515245 + 12345) & 0x7FFFFFFF
-            if seed % 100 < 34:
+            if seed % 100 < 34 * fade:
                 glow = mix(sun_c, cream, 0.4)
                 set_px(x, y, glow)
                 set_px(x, y + 1, mix(glow, sea_bot, 0.35))
